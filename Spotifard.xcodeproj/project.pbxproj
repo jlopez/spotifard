@@ -33,6 +33,15 @@
 		A5A343D42B15B52400E46F57 /* SavedAlbumsGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A343D02B15B52400E46F57 /* SavedAlbumsGridView.swift */; };
 		A5A343D52B15B52400E46F57 /* AlbumGridItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A343D12B15B52400E46F57 /* AlbumGridItemView.swift */; };
 		A5A343D62B15B52400E46F57 /* AlbumTrackCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A343D22B15B52400E46F57 /* AlbumTrackCellView.swift */; };
+		A5A343DB2B16ABF100E46F57 /* ArtistCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A343DA2B16ABF100E46F57 /* ArtistCell.swift */; };
+		A5A343DE2B16AE9600E46F57 /* SpotifyAsyncImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A343DD2B16AE9600E46F57 /* SpotifyAsyncImage.swift */; };
+		A5F7E3372B16C31100166640 /* SearchForArtistsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F7E3362B16C31100166640 /* SearchForArtistsView.swift */; };
+		A5F7E33A2B16C70C00166640 /* ArtistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F7E3392B16C70C00166640 /* ArtistView.swift */; };
+		A5F7E33C2B170C4000166640 /* PlaylistSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F7E33B2B170C4000166640 /* PlaylistSelectionView.swift */; };
+		A5F7E33E2B1719BB00166640 /* PlaylistCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F7E33D2B1719BB00166640 /* PlaylistCell.swift */; };
+		A5F7E3402B171EC400166640 /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F7E33F2B171EC300166640 /* SearchBar.swift */; };
+		A5F7E3422B172CB700166640 /* PlaylistWizard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F7E3412B172CB700166640 /* PlaylistWizard.swift */; };
+		A5F7E3452B1744B300166640 /* TrackCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5F7E3442B1744B300166640 /* TrackCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -81,6 +90,15 @@
 		A5A343D12B15B52400E46F57 /* AlbumGridItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumGridItemView.swift; sourceTree = "<group>"; };
 		A5A343D22B15B52400E46F57 /* AlbumTrackCellView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlbumTrackCellView.swift; sourceTree = "<group>"; };
 		A5A343D72B15B7BC00E46F57 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		A5A343DA2B16ABF100E46F57 /* ArtistCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArtistCell.swift; sourceTree = "<group>"; };
+		A5A343DD2B16AE9600E46F57 /* SpotifyAsyncImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyAsyncImage.swift; sourceTree = "<group>"; };
+		A5F7E3362B16C31100166640 /* SearchForArtistsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchForArtistsView.swift; sourceTree = "<group>"; };
+		A5F7E3392B16C70C00166640 /* ArtistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistView.swift; sourceTree = "<group>"; };
+		A5F7E33B2B170C4000166640 /* PlaylistSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistSelectionView.swift; sourceTree = "<group>"; };
+		A5F7E33D2B1719BB00166640 /* PlaylistCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistCell.swift; sourceTree = "<group>"; };
+		A5F7E33F2B171EC300166640 /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
+		A5F7E3412B172CB700166640 /* PlaylistWizard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistWizard.swift; sourceTree = "<group>"; };
+		A5F7E3442B1744B300166640 /* TrackCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -182,6 +200,9 @@
 		A5A343B12B15A37900E46F57 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				A5F7E3432B1744A100166640 /* Track */,
+				A5F7E3382B16C6F900166640 /* Artist */,
+				A5A343DC2B16AE8300E46F57 /* Utility */,
 				A5A343BC2B15B36100E46F57 /* Album */,
 				A5A343BB2B15B35B00E46F57 /* Playlist */,
 				A5A343C92B15B4EB00E46F57 /* DebugMenuView.swift */,
@@ -209,6 +230,9 @@
 			children = (
 				A5A343BD2B15B37700E46F57 /* PlaylistsListView.swift */,
 				A5A343BF2B15B38D00E46F57 /* PlaylistCellView.swift */,
+				A5F7E33B2B170C4000166640 /* PlaylistSelectionView.swift */,
+				A5F7E33D2B1719BB00166640 /* PlaylistCell.swift */,
+				A5F7E3412B172CB700166640 /* PlaylistWizard.swift */,
 			);
 			path = Playlist;
 			sourceTree = "<group>";
@@ -222,6 +246,33 @@
 				A5A343D02B15B52400E46F57 /* SavedAlbumsGridView.swift */,
 			);
 			path = Album;
+			sourceTree = "<group>";
+		};
+		A5A343DC2B16AE8300E46F57 /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				A5A343DD2B16AE9600E46F57 /* SpotifyAsyncImage.swift */,
+				A5F7E33F2B171EC300166640 /* SearchBar.swift */,
+			);
+			path = Utility;
+			sourceTree = "<group>";
+		};
+		A5F7E3382B16C6F900166640 /* Artist */ = {
+			isa = PBXGroup;
+			children = (
+				A5F7E3362B16C31100166640 /* SearchForArtistsView.swift */,
+				A5A343DA2B16ABF100E46F57 /* ArtistCell.swift */,
+				A5F7E3392B16C70C00166640 /* ArtistView.swift */,
+			);
+			path = Artist;
+			sourceTree = "<group>";
+		};
+		A5F7E3432B1744A100166640 /* Track */ = {
+			isa = PBXGroup;
+			children = (
+				A5F7E3442B1744B300166640 /* TrackCell.swift */,
+			);
+			path = Track;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -364,17 +415,26 @@
 			files = (
 				A5A343D62B15B52400E46F57 /* AlbumTrackCellView.swift in Sources */,
 				A5A343AD2B156A7D00E46F57 /* Spotify.swift in Sources */,
+				A5A343DB2B16ABF100E46F57 /* ArtistCell.swift in Sources */,
 				A5A343C22B15B3C100E46F57 /* PlaylistDeduplicator.swift in Sources */,
 				A5A343CC2B15B4EB00E46F57 /* SearchForTracksView.swift in Sources */,
 				A5A343B82B15A82800E46F57 /* AlertItem.swift in Sources */,
+				A5F7E33A2B16C70C00166640 /* ArtistView.swift in Sources */,
+				A5F7E3452B1744B300166640 /* TrackCell.swift in Sources */,
 				A5A343D42B15B52400E46F57 /* SavedAlbumsGridView.swift in Sources */,
+				A5F7E33E2B1719BB00166640 /* PlaylistCell.swift in Sources */,
 				A5A343C62B15B43600E46F57 /* MiscellaneousUtilities.swift in Sources */,
 				A5A343CD2B15B4EB00E46F57 /* DebugMenuView.swift in Sources */,
 				A5A343C42B15B3E900E46F57 /* SpotifyAPIExtensions.swift in Sources */,
 				A5A343C02B15B38D00E46F57 /* PlaylistCellView.swift in Sources */,
+				A5F7E3402B171EC400166640 /* SearchBar.swift in Sources */,
 				A5A343D52B15B52400E46F57 /* AlbumGridItemView.swift in Sources */,
+				A5A343DE2B16AE9600E46F57 /* SpotifyAsyncImage.swift in Sources */,
+				A5F7E3372B16C31100166640 /* SearchForArtistsView.swift in Sources */,
 				A5000C442B0B0FE9008EC429 /* ContentView.swift in Sources */,
 				A5A343CB2B15B4EB00E46F57 /* RecentlyPlayedView.swift in Sources */,
+				A5F7E33C2B170C4000166640 /* PlaylistSelectionView.swift in Sources */,
+				A5F7E3422B172CB700166640 /* PlaylistWizard.swift in Sources */,
 				A5A343CE2B15B4EB00E46F57 /* TrackView.swift in Sources */,
 				A5A343D32B15B52400E46F57 /* AlbumTracksView.swift in Sources */,
 				A5A343BA2B15B33100E46F57 /* ExamplesListView.swift in Sources */,

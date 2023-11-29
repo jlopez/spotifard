@@ -30,6 +30,11 @@ final class Spotify: ObservableObject {
         fatalError("Could not find 'CLIENT_SECRET' in environment variables")
     }()
 
+    private static let previewAuthorizationManager: Data? = ProcessInfo.processInfo
+        .environment["PREVIEW_AUTHORIZATION_MANAGER"]
+        .flatMap { $0.data(using: .utf8) }
+
+
     /// The key in the keychain that is used to store the authorization
     /// information: "authorizationManager".
     let authorizationManagerKey = "authorizationManager"
@@ -111,9 +116,16 @@ final class Spotify: ObservableObject {
 
         // MARK: Check to see if the authorization information is saved in
         // MARK: the keychain.
-        if let authManagerData = keychain[data: self.authorizationManagerKey] {
+        let override = ProcessInfo.processInfo.isPreviewing ? Spotify.previewAuthorizationManager : nil
+        if override != nil {
+            print("using preview authorization manager")
+        }
+        if let authManagerData = override ?? keychain[data: self.authorizationManagerKey] {
 
             do {
+                if !ProcessInfo.processInfo.isPreviewing {
+                    print(String(data: authManagerData, encoding: .utf8)!)
+                }
                 // Try to decode the data.
                 let authorizationManager = try JSONDecoder().decode(
                     AuthorizationCodeFlowManager.self,

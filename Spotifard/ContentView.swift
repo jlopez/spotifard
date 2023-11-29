@@ -135,6 +135,11 @@ struct ContentView: View {
     }
 }
 
+#Preview("Normal") {
+    return ContentView()
+        .environmentObject(Spotify())
+}
+
 #Preview("Authorized") {
     let spotify = Spotify()
     spotify.isAuthorized = true
@@ -145,6 +150,7 @@ struct ContentView: View {
 
 #Preview("Not authorized") {
     let spotify = Spotify()
+    spotify.isAuthorized = false
 
     return ContentView()
         .environmentObject(spotify)

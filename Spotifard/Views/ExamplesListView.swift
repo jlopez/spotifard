@@ -5,21 +5,24 @@ struct ExamplesListView: View {
     var body: some View {
         List {
 
-            NavigationLink(
-                "Playlists", destination: PlaylistsListView()
-            )
-            NavigationLink(
-                "Saved Albums", destination: SavedAlbumsGridView()
-            )
-            NavigationLink(
-                "Search For Tracks", destination: SearchForTracksView()
-            )
-            NavigationLink(
-                "Recently Played Tracks", destination: RecentlyPlayedView()
-            )
-            NavigationLink(
-                "Debug Menu", destination: DebugMenuView()
-            )
+            NavigationLink("Playlists") {
+                PlaylistsListView()
+            }
+            NavigationLink("Saved Albums") {
+                SavedAlbumsGridView()
+            }
+            NavigationLink("Search For Tracks") {
+                SearchForTracksView()
+            }
+            NavigationLink("Search For Artists") {
+                SearchForArtistsView()
+            }
+            NavigationLink("Recently Played Tracks") {
+                RecentlyPlayedView()
+            }
+            NavigationLink("Debug Menu") {
+                DebugMenuView()
+            }
 
             // This is the location where you can add your own views to test out
             // your application. Each view receives an instance of `Spotify`

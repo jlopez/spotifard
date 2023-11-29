@@ -131,3 +131,65 @@ extension Episode {
 
 
 }
+
+extension Artist : Identifiable {}
+
+extension Playlist : Identifiable {}
+
+extension Track : Identifiable {}
+
+extension Artist {
+    static func popularityDescending(a: Artist, b: Artist) -> Bool {
+        if let a = a.popularity, let b = b.popularity, a != b { return a > b }
+        if let a = a.followers?.total, let b = b.followers?.total, a != b { return a > b }
+        return a.name < b.name
+    }
+}
+
+extension Track {
+    static func popularityDescending(a: Track, b: Track) -> Bool {
+        if let a = a.popularity, let b = b.popularity, a != b { return a > b }
+        return a.name < b.name
+    }
+}
+
+extension SpotifyAPI {
+    func relatedArtists(
+        _ artist: SpotifyURIConvertible,
+        in cancellables: inout Set<AnyCancellable>
+    ) -> AsyncThrowingStream<[Artist], Error> {
+        AsyncThrowingStream { continuation in
+            self.relatedArtists(artist)
+                .receive(on: RunLoop.main)
+                .sink { completion in
+                    switch completion {
+                    case .finished: continuation.finish()
+                    case .failure(let error): continuation.finish(throwing: error)
+                    }
+                } receiveValue: { batch in
+                    continuation.yield(batch)
+                }
+                .store(in: &cancellables)
+        }
+    }
+
+    func artistTopTracks(
+        _ artist: SpotifyURIConvertible,
+        country: String,
+        cancellables: inout Set<AnyCancellable>
+    ) -> AsyncThrowingStream<[Track], Error> {
+        AsyncThrowingStream { continuation in
+            self.artistTopTracks(artist, country: country)
+                .receive(on: RunLoop.main)
+                .sink { completion in
+                    switch completion {
+                    case .finished: continuation.finish()
+                    case .failure(let error): continuation.finish(throwing: error)
+                    }
+                } receiveValue: { batch in
+                    continuation.yield(batch)
+                }
+                .store(in: &cancellables)
+        }
+    }
+}
