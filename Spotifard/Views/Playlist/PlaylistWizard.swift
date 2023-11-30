@@ -14,6 +14,7 @@ struct PlaylistWizard: View {
 
     @EnvironmentObject private var spotify: Spotify
 
+    @State private var selectedPlaylistURI: String?
     @State private var relatedArtists: Set<Artist> = []
     @State private var relatedTracks: [Track] = []
     @State private var addToPlaylistPopover: Bool = false
@@ -29,26 +30,14 @@ struct PlaylistWizard: View {
             }
         }
         .navigationTitle("Related Songs")
-        .navigationBarItems(trailing:
-            Button {
-                addToPlaylistPopover.toggle()
-            } label: {
-                Image(systemName: "text.badge.plus")
-                    .sheet(isPresented: $addToPlaylistPopover) {
-                        PlaylistSelectionView { playlist in
-                            let uris = relatedTracks.map { $0.uri! }
-                            spotify.api.addToPlaylist(playlist, uris: uris)
-                                .receive(on: RunLoop.main)
-                                .sink { completion in
-                                } receiveValue: { snapshot in
-                                    print("Snapshot: \(snapshot)")
-                                }
-                                .store(in: &cancellables)
-                            print("Playlist: \(playlist)")
-                        }
-                    }
-            }
-        )
+        .navigationBarItems(trailing: Button {
+            addToPlaylistPopover.toggle()
+        } label: {
+            Image(systemName: "plus")
+        })
+        .sheet(isPresented: $addToPlaylistPopover, onDismiss: addTracksToPlaylist) {
+            PlaylistSelectionView(playlistURI: $selectedPlaylistURI)
+        }
         .task {
             do {
                 try await traverseRelatedArtists(for: artist, level: 0)
@@ -56,6 +45,19 @@ struct PlaylistWizard: View {
                 print(error)
             }
         }
+    }
+
+    func addTracksToPlaylist() {
+        guard let playlistURI = selectedPlaylistURI else { return }
+        let uris = relatedTracks.map { $0.uri! }
+        spotify.api.addToPlaylist(playlistURI, uris: uris)
+            .receive(on: RunLoop.main)
+            .sink { completion in
+            } receiveValue: { snapshot in
+                print("Snapshot: \(snapshot)")
+            }
+            .store(in: &cancellables)
+        print("Playlist: \(playlistURI)")
     }
 
     func traverseRelatedArtists(for artist: Artist, level: Int) async throws {
