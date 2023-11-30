@@ -10,10 +10,10 @@ import Combine
 import SpotifyWebAPI
 
 struct PlaylistSelectionView: View {
+    @Binding var playlistURI: String?
     let newPlaylistDescription = "Created by Spotifard"
-    var action: ((String) -> ())? = nil
     @EnvironmentObject private var spotify: Spotify
-    @State private var playlist: Playlist<PlaylistItemsReference>? = nil
+    @Environment(\.dismiss) private var dismiss
     @State private var searchTerm: String = ""
     @State private var playlists: [Playlist<PlaylistItemsReference>] = []
     @State private var cancellables: Set<AnyCancellable> = []
@@ -58,8 +58,14 @@ struct PlaylistSelectionView: View {
             }
             .listStyle(.plain)
             .navigationTitle("Add to playlist")
+            .toolbar {
+                Button { dismiss() } label: {
+                    Text("Cancel")
+                }
+            }
         }
         .onAppear(perform: fetchPlaylists)
+        .onAppear { playlistURI = nil }
     }
 
     func fetchPlaylists() {
@@ -130,8 +136,8 @@ struct PlaylistSelectionView: View {
     }
 
     func selectPlaylist<T>(_ playlist: Playlist<T>) {
-        print("Playlist \(playlist.name) (\(playlist.uri)) selected")
-        action?(playlist.uri)
+        playlistURI = playlist.uri
+        dismiss()
     }
 }
 
@@ -140,11 +146,31 @@ enum PlaylistCreationError : Error {
     case noPlaylistEmitted
 }
 
-#Preview {
+#Preview("Normal") {
     return NavigationStack {
-        PlaylistSelectionView() { playlist in
-            print("Playlist \(playlist)")
-        }
+        PlaylistSelectionView(playlistURI: .constant(nil))
     }
     .environmentObject(Spotify())
+}
+
+#Preview("Sheet") {
+    struct Container: View {
+        @State var playlistURI: String? = nil
+        @State var show = true
+        var body: some View {
+            NavigationStack {
+                Button { show.toggle() } label: { Text("Show sheet") }
+                    .navigationTitle("Related Songs")
+                    .navigationBarItems(trailing: Image(systemName: "text.badge.plus")
+                        .sheet(isPresented: $show, onDismiss: {
+                            print("PlaylistURI \(playlistURI ?? "None")")
+                        }) {
+                            PlaylistSelectionView(playlistURI: $playlistURI)
+                        }
+                    )
+            }
+        }
+    }
+    return Container()
+        .environmentObject(Spotify())
 }

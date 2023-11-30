@@ -39,8 +39,6 @@ struct TrackCell: View {
 
     func playTrack() {
 
-        let alertTitle = "Couldn't Play \(track.name)"
-
         let playbackRequest: PlaybackRequest
 
         if let albumURI = track.album?.uri {
