@@ -15,13 +15,6 @@ struct SearchForArtistsView: View {
     @State private var searchText = ""
     @State private var searchCancellable: AnyCancellable? = nil
     
-    /// Used by the preview provider to provide sample data.
-    fileprivate init(sampleArtists: [Artist]) {
-        self._artists = State(initialValue: sampleArtists)
-    }
-    
-    init() { }
-    
     var body: some View {
         VStack {
             searchBar
@@ -135,8 +128,7 @@ struct SearchForArtistsView: View {
     ]
 
     return NavigationView {
-        SearchForArtistsView(sampleArtists: artists)
-            .environmentObject(spotify)
-
+        SearchForArtistsView(artists: artists)
     }
+    .environmentObject(spotify)
 }
