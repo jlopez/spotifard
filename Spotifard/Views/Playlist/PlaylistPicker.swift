@@ -1,5 +1,5 @@
 //
-//  PlaylistSelectionView.swift
+//  PlaylistPicker.swift
 //  Spotifard
 //
 //  Created by Jesus Lopez on 11/28/23.
@@ -9,7 +9,7 @@ import SwiftUI
 import Combine
 import SpotifyWebAPI
 
-struct PlaylistSelectionView: View {
+struct PlaylistPicker: View {
     @Binding var playlistURI: String?
     let newPlaylistDescription = "Created by Spotifard"
     @EnvironmentObject private var spotify: Spotify
@@ -31,39 +31,33 @@ struct PlaylistSelectionView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            VStack {
-                SearchBar(searchTerm: $searchTerm)
-                List {
-                    if mayCreatePlaylist() {
-                        Button("Create playlist \"\(searchTerm)\"") {
-                            Task {
-                                let playlist = try await createPlaylist(searchTerm)
-                                selectPlaylist(playlist)
-                            }
-                        }
-                    }
-                    ForEach(filteredPlaylists) { playlist in
-                        Button {
+        VStack {
+            SearchBar(searchTerm: $searchTerm)
+            List {
+                if mayCreatePlaylist() {
+                    Button("Create playlist \"\(searchTerm)\"") {
+                        Task {
+                            let playlist = try await createPlaylist(searchTerm)
                             selectPlaylist(playlist)
-                        } label: {
-                            PlaylistCell(playlist: playlist)
                         }
-                        .listRowSeparator(.hidden)
-                        .listRowInsets(EdgeInsets())
-                        .padding(4)
                     }
                 }
-                .listRowSpacing(0)
-            }
-            .listStyle(.plain)
-            .navigationTitle("Add to playlist")
-            .toolbar {
-                Button { dismiss() } label: {
-                    Text("Cancel")
+                ForEach(filteredPlaylists) { playlist in
+                    Button {
+                        selectPlaylist(playlist)
+                    } label: {
+                        PlaylistCell(playlist: playlist)
+                    }
+                    .listRowSeparator(.hidden)
+                    .listRowInsets(EdgeInsets())
+                    .padding(4)
                 }
             }
+            .listRowSpacing(0)
         }
+        .listStyle(.plain)
+        .navigationTitle("Add to playlist")
+        .toolbar { Button { dismiss() } label: { Text("Cancel") } }
         .onAppear(perform: fetchPlaylists)
         .onAppear { playlistURI = nil }
     }
@@ -148,7 +142,7 @@ enum PlaylistCreationError : Error {
 
 #Preview("Normal") {
     return NavigationStack {
-        PlaylistSelectionView(playlistURI: .constant(nil))
+        PlaylistPicker(playlistURI: .constant(nil))
     }
     .environmentObject(Spotify())
 }
@@ -161,13 +155,11 @@ enum PlaylistCreationError : Error {
             NavigationStack {
                 Button { show.toggle() } label: { Text("Show sheet") }
                     .navigationTitle("Related Songs")
-                    .navigationBarItems(trailing: Image(systemName: "text.badge.plus")
-                        .sheet(isPresented: $show, onDismiss: {
-                            print("PlaylistURI \(playlistURI ?? "None")")
-                        }) {
-                            PlaylistSelectionView(playlistURI: $playlistURI)
-                        }
-                    )
+                    .sheet(isPresented: $show, onDismiss: {
+                        print("PlaylistURI \(playlistURI ?? "None")")
+                    }) {
+                        NavigationStack { PlaylistPicker(playlistURI: $playlistURI) }
+                    }
             }
         }
     }

@@ -17,7 +17,8 @@ struct PlaylistWizard: View {
     @State private var selectedPlaylistURI: String?
     @State private var relatedArtists: Set<Artist> = []
     @State private var relatedTracks: [Track] = []
-    @State private var addToPlaylistPopover: Bool = false
+    @State private var showPlaylistPicker: Bool = false
+    @State private var showFilterSheet: Bool = false
     @State private var cancellables: Set<AnyCancellable> = []
     private let artistDepth = 2
     private let artistCount = 3
@@ -31,12 +32,24 @@ struct PlaylistWizard: View {
         }
         .navigationTitle("Related Songs")
         .navigationBarItems(trailing: Button {
-            addToPlaylistPopover.toggle()
+            showPlaylistPicker.toggle()
         } label: {
             Image(systemName: "plus")
         })
-        .sheet(isPresented: $addToPlaylistPopover, onDismiss: addTracksToPlaylist) {
-            PlaylistSelectionView(playlistURI: $selectedPlaylistURI)
+        .navigationBarItems(trailing: Button {
+            showFilterSheet.toggle()
+        } label: {
+            Image(systemName: "slider.horizontal.3")
+        })
+        .sheet(isPresented: $showFilterSheet) {
+            NavigationStack {
+                TrackFilterView()
+            }
+        }
+        .sheet(isPresented: $showPlaylistPicker, onDismiss: addTracksToPlaylist) {
+            NavigationStack {
+                PlaylistPicker(playlistURI: $selectedPlaylistURI)
+            }
         }
         .task {
             do {
