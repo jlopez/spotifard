@@ -14,6 +14,7 @@
 		A5000C532B0B0FEB008EC429 /* SpotifardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5000C522B0B0FEB008EC429 /* SpotifardTests.swift */; };
 		A5000C5D2B0B0FEB008EC429 /* SpotifardUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5000C5C2B0B0FEB008EC429 /* SpotifardUITests.swift */; };
 		A5000C5F2B0B0FEB008EC429 /* SpotifardUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5000C5E2B0B0FEB008EC429 /* SpotifardUITestsLaunchTests.swift */; };
+		A507F4382B19D6DA00952003 /* ToolbarCloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A507F4372B19D6DA00952003 /* ToolbarCloseButton.swift */; };
 		A5A343AA2B15697200E46F57 /* SpotifyAPI in Frameworks */ = {isa = PBXBuildFile; productRef = A5A343A92B15697200E46F57 /* SpotifyAPI */; };
 		A5A343AD2B156A7D00E46F57 /* Spotify.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5A343AC2B156A7D00E46F57 /* Spotify.swift */; };
 		A5A343B02B156B8A00E46F57 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = A5A343AF2B156B8A00E46F57 /* KeychainAccess */; };
@@ -74,6 +75,7 @@
 		A5000C582B0B0FEB008EC429 /* SpotifardUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SpotifardUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5000C5C2B0B0FEB008EC429 /* SpotifardUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifardUITests.swift; sourceTree = "<group>"; };
 		A5000C5E2B0B0FEB008EC429 /* SpotifardUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifardUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		A507F4372B19D6DA00952003 /* ToolbarCloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarCloseButton.swift; sourceTree = "<group>"; };
 		A5A343AC2B156A7D00E46F57 /* Spotify.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Spotify.swift; sourceTree = "<group>"; };
 		A5A343B22B15A38300E46F57 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		A5A343B72B15A82800E46F57 /* AlertItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertItem.swift; sourceTree = "<group>"; };
@@ -258,6 +260,7 @@
 				A5A343DD2B16AE9600E46F57 /* SpotifyAsyncImage.swift */,
 				A5F7E33F2B171EC300166640 /* SearchBar.swift */,
 				A5F7E3482B1931A100166640 /* RangeSlider.swift */,
+				A507F4372B19D6DA00952003 /* ToolbarCloseButton.swift */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -432,6 +435,7 @@
 				A5A343C62B15B43600E46F57 /* MiscellaneousUtilities.swift in Sources */,
 				A5A343CD2B15B4EB00E46F57 /* DebugMenuView.swift in Sources */,
 				A5A343C42B15B3E900E46F57 /* SpotifyAPIExtensions.swift in Sources */,
+				A507F4382B19D6DA00952003 /* ToolbarCloseButton.swift in Sources */,
 				A5A343C02B15B38D00E46F57 /* PlaylistCellView.swift in Sources */,
 				A5F7E3402B171EC400166640 /* SearchBar.swift in Sources */,
 				A5A343D52B15B52400E46F57 /* AlbumGridItemView.swift in Sources */,

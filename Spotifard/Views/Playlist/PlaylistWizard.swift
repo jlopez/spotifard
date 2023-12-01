@@ -17,6 +17,7 @@ struct PlaylistWizard: View {
     @State private var selectedPlaylistURI: String?
     @State private var relatedArtists: Set<Artist> = []
     @State private var relatedTracks: [Track] = []
+    @SceneStorage("trackFilter") private var filter = TrackFilter()
     @State private var showPlaylistPicker: Bool = false
     @State private var showFilterSheet: Bool = false
     @State private var cancellables: Set<AnyCancellable> = []
@@ -43,8 +44,9 @@ struct PlaylistWizard: View {
         })
         .sheet(isPresented: $showFilterSheet) {
             NavigationStack {
-                TrackFilterView()
+                TrackFilterView(filter: $filter)
             }
+            .presentationDetents([ .medium, .large ])
         }
         .sheet(isPresented: $showPlaylistPicker, onDismiss: addTracksToPlaylist) {
             NavigationStack {

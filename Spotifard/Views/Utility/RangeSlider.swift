@@ -10,7 +10,7 @@ import Combine
 
 // https://stackoverflow.com/questions/62587261/swiftui-2-handle-range-slider
 struct RangeSlider<Label, ValueLabel> : View where Label : View, ValueLabel : View {
-    @Binding var value: MutableRange<Double>
+    @Binding var value: ClosedRange<Double>
     var bounds: ClosedRange<Double>
     var step: Double.Stride
     var label: Label
@@ -20,21 +20,7 @@ struct RangeSlider<Label, ValueLabel> : View where Label : View, ValueLabel : Vi
     @State var dragging: Bool = false
 
     init(
-        value: Binding<MutableRange<Double>>,
-        in bounds: ClosedRange<Double> = 0...1,
-        step: Double.Stride = 1,
-        @ViewBuilder label: () -> Label,
-        onEditingChanged: @escaping (Bool) -> Void = { _ in }
-    ) {
-        self._value = value
-        self.bounds = bounds
-        self.step = step
-        self.label = label()
-        self.onEditingChanged = onEditingChanged
-    }
-
-    init(
-        value: Binding<MutableRange<Double>>,
+        value: Binding<ClosedRange<Double>>,
         in bounds: ClosedRange<Double> = 0...1,
         step: Double.Stride = 1,
         @ViewBuilder label: () -> Label,
@@ -91,8 +77,7 @@ struct RangeSlider<Label, ValueLabel> : View where Label : View, ValueLabel : Vi
                             dragging = true
                             let lowerBound = max(0, min((value.location.x - radius) / w + 0.5, 1))
                             let upperBound = max(lowerBound, fraction.upperBound)
-                            self.value.lowerBound = bounds.fromFraction(lowerBound)
-                            self.value.upperBound = bounds.fromFraction(upperBound)
+                            self.value = bounds.fromFraction(lowerBound)...bounds.fromFraction(upperBound)
                         }
                         .onEnded { _ in
                             dragging = false
@@ -113,8 +98,7 @@ struct RangeSlider<Label, ValueLabel> : View where Label : View, ValueLabel : Vi
                             dragging = true
                             let upperBound = max(0, min((value.location.x - radius) / w + 0.5, 1))
                             let lowerBound = min(fraction.lowerBound, upperBound)
-                            self.value.lowerBound = bounds.fromFraction(lowerBound)
-                            self.value.upperBound = bounds.fromFraction(upperBound)
+                            self.value = bounds.fromFraction(lowerBound)...bounds.fromFraction(upperBound)
                         }
                         .onEnded { _ in
                             dragging = false
@@ -130,10 +114,24 @@ struct RangeSlider<Label, ValueLabel> : View where Label : View, ValueLabel : Vi
     }
 
     func log(_ geometry: GeometryProxy) -> Bool {
-//        print(geometry.size.debugDescription)
         return false
     }
+}
 
+extension RangeSlider where ValueLabel == EmptyView {
+    init(
+        value: Binding<ClosedRange<Double>>,
+        in bounds: ClosedRange<Double> = 0...1,
+        step: Double.Stride = 1,
+        @ViewBuilder label: () -> Label,
+        onEditingChanged: @escaping (Bool) -> Void = { _ in }
+    ) {
+        self._value = value
+        self.bounds = bounds
+        self.step = step
+        self.label = label()
+        self.onEditingChanged = onEditingChanged
+    }
 }
 
 struct MutableRange<Value> where Value : Comparable {
@@ -159,29 +157,21 @@ extension FloatingPoint {
 
 #Preview {
     struct Content: View {
-        @State var value = MutableRange(lowerBound: 77.0, upperBound: 83.0)
+        @State var value = 77.0...83.0
         @State var toggle: Bool = false
+        @State var dummy = 0.0
 
         var body: some View {
             List {
-                Stepper(value: $value.lowerBound, in: 0...100, step: 5) { Text("Stepper") }
-
-                Slider(value: $value.lowerBound, in: 0...100, step: 1) { Text("Popularity") }
-
-                RangeSlider(value: $value, in: 0...100, step: 1) { Text("Popularity") } minimumValueLabel: {
-                    Text("0")
-                } maximumValueLabel: {
-                    Text("100")
-                } onEditingChanged: { editing in
-                    print("Editing \(editing)")
+                Section("Value \(value.lowerBound, specifier: "%.0f") - \(value.upperBound, specifier: "%.0f")") {
+                    RangeSlider(value: $value, in: 0...100, step: 5) { Text("Popularity") } minimumValueLabel: {
+                        Text("0")
+                    } maximumValueLabel: {
+                        Text("100")
+                    } onEditingChanged: { editing in
+                        print("Editing \(editing)")
+                    }
                 }
-
-                Slider(value: $value.upperBound, in: 0...100, step: 1) { Text("Popularity") } minimumValueLabel: {
-                    Text("0")
-                } maximumValueLabel: {
-                    Text("100")
-                }
-                Toggle(isOn: $toggle) { Text("Toggle") }
             }
         }
     }
