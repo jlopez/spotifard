@@ -65,6 +65,9 @@ struct ContentView: View {
         // refresh tokens.
         spotify.api.authorizationManager.requestAccessAndRefreshTokens(
             redirectURIWithQuery: url,
+            // Must match the code verifier that was used to generate the
+            // code challenge when creating the authorization URL.
+            codeVerifier: spotify.codeVerifier,
             // This value must be the same as the one used to create the
             // authorization URL. Otherwise, an error will be thrown.
             state: spotify.authorizationState
@@ -111,6 +114,7 @@ struct ContentView: View {
         // MARK: each authorization request. This ensures an incoming redirect
         // MARK: from Spotify was the result of a request made by this app, and
         // MARK: and not an attacker.
+        self.spotify.codeVerifier = String.randomURLSafe(length: 128)
         self.spotify.authorizationState = String.randomURLSafe(length: 128)
 
     }

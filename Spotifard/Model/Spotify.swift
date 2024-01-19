@@ -14,21 +14,7 @@ import SpotifyWebAPI
  */
 final class Spotify: ObservableObject {
 
-    private static let clientId: String = {
-        if let clientId = ProcessInfo.processInfo
-                .environment["CLIENT_ID"] {
-            return clientId
-        }
-        fatalError("Could not find 'CLIENT_ID' in environment variables")
-    }()
-
-    private static let clientSecret: String = {
-        if let clientSecret = ProcessInfo.processInfo
-                .environment["CLIENT_SECRET"] {
-            return clientSecret
-        }
-        fatalError("Could not find 'CLIENT_SECRET' in environment variables")
-    }()
+    private static let clientId: String = "8a2ea336622243cf90818090a1f94b19"
 
     private static let previewAuthorizationManager: Data? = ProcessInfo.processInfo
         .environment["PREVIEW_AUTHORIZATION_MANAGER"]
@@ -44,6 +30,8 @@ final class Spotify: ObservableObject {
     let loginCallbackURL = URL(
         string: "spotifard://spotify-login-callback"
     )!
+
+    var codeVerifier = String.randomURLSafe(length: 128)
 
     /// A cryptographically-secure random string used to ensure than an incoming
     /// redirect from Spotify was the result of a request made by this app, and
@@ -83,10 +71,7 @@ final class Spotify: ObservableObject {
     /// An instance of `SpotifyAPI` that you use to make requests to the Spotify
     /// web API.
     let api = SpotifyAPI(
-        authorizationManager: AuthorizationCodeFlowManager(
-            clientId: Spotify.clientId,
-            clientSecret: Spotify.clientSecret
-        )
+        authorizationManager: AuthorizationCodeFlowPKCEManager(clientId: clientId)
     )
 
     var cancellables: Set<AnyCancellable> = []
@@ -128,7 +113,7 @@ final class Spotify: ObservableObject {
                 }
                 // Try to decode the data.
                 let authorizationManager = try JSONDecoder().decode(
-                    AuthorizationCodeFlowManager.self,
+                    AuthorizationCodeFlowPKCEManager.self,
                     from: authManagerData
                 )
                 print("found authorization information in keychain")
@@ -170,10 +155,10 @@ final class Spotify: ObservableObject {
      `LoginView`.
      */
     func authorize() {
-
+        let codeChallenge = String.makeCodeChallenge(codeVerifier: codeVerifier)
         let url = self.api.authorizationManager.makeAuthorizationURL(
             redirectURI: self.loginCallbackURL,
-            showDialog: true,
+            codeChallenge: codeChallenge,
             // This same value **MUST** be provided for the state parameter of
             // `authorizationManager.requestAccessAndRefreshTokens(redirectURIWithQuery:state:)`.
             // Otherwise, an error will be thrown.
