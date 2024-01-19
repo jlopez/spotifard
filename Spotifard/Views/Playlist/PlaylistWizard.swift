@@ -11,24 +11,27 @@ import SpotifyWebAPI
 
 struct PlaylistWizard: View {
     let artist: Artist
+    let settings: PlaylistSettings
 
     @EnvironmentObject private var spotify: Spotify
 
     @State private var selectedPlaylistURI: String?
     @State private var relatedArtists: Set<Artist> = []
     @State private var relatedTracks: [Track] = []
+    @State private var tracksAndFeatures: [TrackAndFeatures] = []
     @SceneStorage("trackFilter") private var filter = TrackFilter()
     @State private var showPlaylistPicker: Bool = false
     @State private var showFilterSheet: Bool = false
     @State private var cancellables: Set<AnyCancellable> = []
-    private let artistDepth = 2
-    private let artistCount = 3
-    private let trackCount = 3
+
+    var filteredTracks: [TrackAndFeatures] {
+        tracksAndFeatures.filter { filter.filter($0) }
+    }
 
     var body: some View {
         List {
-            ForEach(relatedTracks) { track in
-                TrackCell(track: track)
+            ForEach(filteredTracks) { trackWithFeatures in
+                TrackAndFeaturesCell(trackAndFeatures: trackWithFeatures)
             }
         }
         .navigationTitle("Related Songs")
@@ -64,7 +67,7 @@ struct PlaylistWizard: View {
 
     func addTracksToPlaylist() {
         guard let playlistURI = selectedPlaylistURI else { return }
-        let uris = relatedTracks.map { $0.uri! }
+        let uris = filteredTracks.map { $0.track.uri! }
         spotify.api.addToPlaylist(playlistURI, uris: uris)
             .receive(on: RunLoop.main)
             .sink { completion in
@@ -76,32 +79,74 @@ struct PlaylistWizard: View {
     }
 
     func traverseRelatedArtists(for artist: Artist, level: Int) async throws {
-        guard level < artistDepth else { return }
+        guard level < settings.artistDepth else { return }
         try await withThrowingDiscardingTaskGroup { group in
             let chosenArtists = try await spotify.api.relatedArtists(artist.uri!, in: &cancellables)
                 .reduce(into: []) { artists, batch in
                     artists.appendSorted(contentsOf: batch, by: Artist.popularityDescending)
                 }
-                .prefix(artistCount)
+                .prefix(settings.artistCount)
             for chosenArtist in chosenArtists {
                 guard relatedArtists.insert(chosenArtist).inserted else { continue }
                 let tracks = try await spotify.api.artistTopTracks(chosenArtist.uri!, country: "US", cancellables: &cancellables)
                     .reduce(into: []) { tracks, batch in
                         tracks.appendSorted(contentsOf: batch, by: Track.popularityDescending)
                     }
-                    .prefix(trackCount)
+                    .prefix(settings.trackCount)
                 relatedTracks.appendSorted(contentsOf: tracks, by: Track.popularityDescending)
                 group.addTask {
                     try await traverseRelatedArtists(for: chosenArtist, level: level + 1)
                 }
             }
         }
+        let uris = relatedTracks.map { $0.uri! }
+        let features = try await spotify.api.tracksAudioFeatures(uris).values
+            .reduce(into: [String: AudioFeatures]()) { dict, features in
+                for feature in features {
+                    guard let uri = feature?.uri else { continue }
+                    dict[uri] = feature
+                }
+            }
+        tracksAndFeatures = relatedTracks.compactMap { track in
+            guard let features = features[track.uri!] else {
+                print("Unable to get features for track \(track.name) (\(track.uri!))")
+                return nil
+            }
+            return TrackAndFeatures(track: track, features: features)
+        }
     }
+}
+
+struct TrackAndFeatures : Identifiable {
+    var id: String { track.uri! }
+
+    let track: Track
+    let features: AudioFeatures
+}
+
+struct TrackAndFeaturesCell : View {
+    let trackAndFeatures: TrackAndFeatures
+
+    var body: some View {
+        HStack {
+            TrackCell(track: trackAndFeatures.track)
+            Spacer()
+            Text("\(trackAndFeatures.features.tempo, specifier: "%.0f") BPM")
+                .font(.caption)
+                .foregroundColor(.secondary)
+        }
+    }
+}
+
+struct PlaylistSettings {
+    var artistDepth = 1
+    var artistCount = 10
+    var trackCount = 3
 }
 
 #Preview {
     NavigationStack {
-        PlaylistWizard(artist: Artist.crumb)
+        PlaylistWizard(artist: Artist.crumb, settings: PlaylistSettings())
     }
     .environmentObject(Spotify())
 }

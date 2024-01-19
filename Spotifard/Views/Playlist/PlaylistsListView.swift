@@ -82,9 +82,6 @@ struct PlaylistsListView: View {
 
     func retrievePlaylists() {
 
-        // Don't try to load any playlists if we're in preview mode.
-        if ProcessInfo.processInfo.isPreviewing { return }
-
         self.isLoadingPlaylists = true
         self.playlists = []
         spotify.api.currentUserPlaylists(limit: 50)

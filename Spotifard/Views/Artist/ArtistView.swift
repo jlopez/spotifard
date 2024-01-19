@@ -17,6 +17,7 @@ struct ArtistView: View {
     @State var relatedArtists: [Artist] = []
     @State private var cancellables: Set<AnyCancellable> = []
     @State private var addToPlaylistPopover = false
+    @State private var playlistSettings = PlaylistSettings()
 
     var body: some View {
         Form {
@@ -50,7 +51,10 @@ struct ArtistView: View {
             }
         }
         .navigationBarItems(trailing: NavigationLink {
-            PlaylistWizard(artist: artist)
+            PlaylistSettingsView(settings: $playlistSettings)
+        } label: { Image(systemName: "gear")})
+        .navigationBarItems(trailing: NavigationLink {
+            PlaylistWizard(artist: artist, settings: playlistSettings)
         } label: {
             Image(systemName: "text.badge.star")
         })

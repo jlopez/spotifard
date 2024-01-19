@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SpotifyWebAPI
 
 struct TrackFilterView: View {
     @Binding var filter: TrackFilter
@@ -38,7 +39,7 @@ struct TrackFilterView: View {
 
 struct TrackFilter : Codable {
     var enableLiveFM = false
-    var enableBPM = true
+    var enableBPM = false
 
     var liveFM = false
     var bpm = 157.0...163.0
@@ -56,6 +57,11 @@ struct TrackFilter : Codable {
     var timeSignature: Double = 0
     var key: Double = 0
     var mode: Double = 0
+
+    func filter(_ track: TrackAndFeatures) -> Bool {
+        if enableBPM && !(bpm.contains(track.features.tempo) || bpm.contains(track.features.tempo * 2)) { return false }
+        return true
+    }
 }
 
 extension TrackFilter : RawRepresentable {
