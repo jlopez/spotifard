@@ -37,6 +37,32 @@ struct TrackFilterView: View {
     }
 }
 
+// https://forums.swift.org/t/rawrepresentable-conformance-leads-to-crash/51912/4
+struct CodableWrapper<Value: Codable> {
+    var value: Value
+}
+
+extension CodableWrapper: RawRepresentable {
+
+    typealias RawValue = String
+
+    var rawValue: RawValue {
+        guard let data = try? JSONEncoder().encode(value),
+              let string = String(data: data, encoding: .utf8)
+        else { return "{}" }
+        return string
+    }
+
+    init?(rawValue: RawValue) {
+        guard let data = rawValue.data(using: .utf8),
+              let decoded = try? JSONDecoder().decode(Value.self, from: data)
+        else { return nil }
+        value = decoded
+    }
+}
+
+extension CodableWrapper: Equatable where Value : Equatable {}
+
 struct TrackFilter : Codable {
     var enableLiveFM = false
     var enableBPM = false
@@ -62,24 +88,6 @@ struct TrackFilter : Codable {
         if enableBPM && !(bpm.contains(track.features.tempo) || bpm.contains(track.features.tempo * 2)) { return false }
         return true
     }
-}
-
-extension TrackFilter : RawRepresentable {
-    var rawValue: String {
-        guard let data = try? JSONEncoder().encode(self),
-              let string = String(data: data, encoding: .utf8)
-        else { return "{}" }
-        return string
-    }
-    
-    init?(rawValue: String) {
-        guard let data = rawValue.data(using: .utf8),
-            let result = try? JSONDecoder().decode(TrackFilter.self, from: data)
-          else { return }
-          self = result
-    }
-
-    typealias RawValue = String
 }
 
 #Preview("Sheet") {

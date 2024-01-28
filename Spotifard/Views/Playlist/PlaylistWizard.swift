@@ -19,13 +19,13 @@ struct PlaylistWizard: View {
     @State private var relatedArtists: Set<Artist> = []
     @State private var relatedTracks: [Track] = []
     @State private var tracksAndFeatures: [TrackAndFeatures] = []
-    @SceneStorage("trackFilter") private var filter = TrackFilter()
+    @SceneStorage("trackFilter") private var filter: CodableWrapper<TrackFilter> = .init(value: .init())
     @State private var showPlaylistPicker: Bool = false
     @State private var showFilterSheet: Bool = false
     @State private var cancellables: Set<AnyCancellable> = []
 
     var filteredTracks: [TrackAndFeatures] {
-        tracksAndFeatures.filter { filter.filter($0) }
+        tracksAndFeatures.filter { filter.value.filter($0) }
     }
 
     var body: some View {
@@ -47,7 +47,7 @@ struct PlaylistWizard: View {
         })
         .sheet(isPresented: $showFilterSheet) {
             NavigationStack {
-                TrackFilterView(filter: $filter)
+                TrackFilterView(filter: $filter.value)
             }
             .presentationDetents([ .medium, .large ])
         }
