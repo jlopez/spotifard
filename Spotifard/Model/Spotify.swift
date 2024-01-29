@@ -108,9 +108,6 @@ final class Spotify: ObservableObject {
         if let authManagerData = override ?? keychain[data: self.authorizationManagerKey] {
 
             do {
-                if !ProcessInfo.processInfo.isPreviewing {
-                    print(String(data: authManagerData, encoding: .utf8)!)
-                }
                 // Try to decode the data.
                 let authorizationManager = try JSONDecoder().decode(
                     AuthorizationCodeFlowPKCEManager.self,
@@ -218,6 +215,9 @@ final class Spotify: ObservableObject {
             let authManagerData = try JSONEncoder().encode(
                 self.api.authorizationManager
             )
+            if !ProcessInfo.processInfo.isPreviewing {
+                print(String(data: authManagerData, encoding: .utf8)!)
+            }
 
             // Save the data to the keychain.
             self.keychain[data: self.authorizationManagerKey] = authManagerData
