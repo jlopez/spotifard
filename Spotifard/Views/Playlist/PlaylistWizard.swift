@@ -129,7 +129,7 @@ struct TrackAndFeaturesCell : View {
 
     var body: some View {
         HStack {
-            TrackCell(track: trackAndFeatures.track)
+            TrackCell(track: trackAndFeatures.track, audioFeatures: nil)
             Spacer()
             Text("\(trackAndFeatures.features.tempo, specifier: "%.0f") BPM")
                 .font(.caption)

@@ -11,6 +11,7 @@ import SpotifyWebAPI
 
 struct TrackCell: View {
     let track: Track
+    let audioFeatures: AudioFeatures?
 
     @EnvironmentObject private var spotify: Spotify
     @State private var playRequestCancellable: AnyCancellable? = nil
@@ -19,18 +20,26 @@ struct TrackCell: View {
         HStack {
             SpotifyAsyncImage(images: track.album!.images)
                 .frame(width: 50, height: 50)
-            VStack(alignment: .leading) {
-                Text(track.name)
-                Text(track.artists?.first?.name ?? "")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+            VStack {
+                HStack {
+                    Text(track.name)
+                        .truncationMode(.tail)
+                        .lineLimit(1)
+                    Spacer()
+                    Text("\(track.popularity?.description ?? "")")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                HStack {
+                    Text(track.artists?.first?.name ?? "")
+                    Spacer()
+                    if let audioFeatures = audioFeatures {
+                        Text("\(Int(audioFeatures.tempo)) BPM")
+                    }
+                }
+                .font(.caption)
+                .foregroundStyle(.secondary)
             }
-            Spacer()
-            VStack(alignment: .trailing) {
-                Text("\(track.popularity?.description ?? "")")
-            }
-            .font(.caption)
-            .foregroundColor(.secondary)
         }
         .onTapGesture {
             playTrack()
@@ -72,7 +81,7 @@ struct TrackCell: View {
         .reckoner, .theEnd, .time
     ]
     return List(tracks) { track in
-        TrackCell(track: track)
+        TrackCell(track: track, audioFeatures: nil)
     }
     .environmentObject(Spotify())
 }

@@ -15,7 +15,12 @@ struct PlaylistCell: View {
         HStack {
             SpotifyAsyncImage(images: playlist.images)
                 .frame(width: 50, height: 50)
-            Text(playlist.name)
+            VStack(alignment: .leading) {
+                Text(playlist.name)
+                Text("\(playlist.items.total) tracks")
+                    .foregroundStyle(.secondary)
+                    .font(.caption)
+            }
         }
     }
 }
