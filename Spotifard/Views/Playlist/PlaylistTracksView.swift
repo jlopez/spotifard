@@ -16,7 +16,7 @@ struct PlaylistTracksView: View {
 
     var sortedTracks: [Track] {
         tracks.sorted { a, b in
-            audioFeaturesForTrack(a)?.tempo ?? 0 < audioFeaturesForTrack(b)?.tempo ?? 0
+            audioFeaturesForTrack(a)?.normalizedTempo ?? 0 < audioFeaturesForTrack(b)?.normalizedTempo ?? 0
         }
     }
 
@@ -26,7 +26,7 @@ struct PlaylistTracksView: View {
                 Text("Fetching tracks...")
             } else {
                 List(sortedTracks) { track in
-                    TrackCell(track: track, audioFeatures: audioFeaturesForTrack(track))
+                    TrackCell(track: track, contextUri: playlist.uri, audioFeatures: audioFeaturesForTrack(track))
                 }
             }
         }
@@ -62,6 +62,17 @@ struct PlaylistTracksView: View {
     func audioFeaturesForTrack(_ track: Track) -> AudioFeatures? {
         guard let uri = track.uri else { return nil }
         return audioFeaturesMap[uri]
+    }
+}
+
+extension AudioFeatures {
+    /// Returns the tempo, normalized to a range of 70 to 140.
+    /// This is useful for sorting tracks by tempo.
+    var normalizedTempo: Double {
+        var work = tempo
+        while work < 70 { work *= 2 }
+        while work >= 140 { work /= 2 }
+        return work
     }
 }
 

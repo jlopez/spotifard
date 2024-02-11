@@ -11,10 +11,17 @@ import SpotifyWebAPI
 
 struct TrackCell: View {
     let track: Track
+    let contextUri: SpotifyURIConvertible?
     let audioFeatures: AudioFeatures?
 
     @EnvironmentObject private var spotify: Spotify
     @State private var playRequestCancellable: AnyCancellable? = nil
+
+    init(track: Track, contextUri: SpotifyURIConvertible? = nil, audioFeatures: AudioFeatures? = nil) {
+        self.track = track
+        self.contextUri = contextUri
+        self.audioFeatures = audioFeatures
+    }
 
     var body: some View {
         HStack {
@@ -50,12 +57,12 @@ struct TrackCell: View {
 
         let playbackRequest: PlaybackRequest
 
-        if let albumURI = track.album?.uri {
+        if let contextUri = contextUri ?? track.album?.uri {
             // Play the track in the context of its album. Always prefer
             // providing a context; otherwise, the back and forwards buttons may
             // not work.
             playbackRequest = PlaybackRequest(
-                context: .contextURI(albumURI),
+                context: .contextURI(contextUri),
                 offset: .uri(track.uri!)
             )
         }
@@ -81,7 +88,7 @@ struct TrackCell: View {
         .reckoner, .theEnd, .time
     ]
     return List(tracks) { track in
-        TrackCell(track: track, audioFeatures: nil)
+        TrackCell(track: track)
     }
     .environmentObject(Spotify())
 }
