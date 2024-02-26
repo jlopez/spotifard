@@ -153,6 +153,17 @@ extension Track {
     }
 }
 
+extension AudioFeatures {
+    /// Returns the tempo, normalized to a range of 70 to 140.
+    /// This is useful for sorting tracks by tempo.
+    var normalizedTempo: Double {
+        var work = tempo
+        while work < 70 { work *= 2 }
+        while work >= 140 { work /= 2 }
+        return work
+    }
+}
+
 extension SpotifyAPI {
     func relatedArtists(
         _ artist: SpotifyURIConvertible,

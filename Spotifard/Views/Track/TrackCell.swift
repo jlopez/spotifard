@@ -11,21 +11,37 @@ import SpotifyWebAPI
 
 struct TrackCell: View {
     let track: Track
+    let caption: Caption
     let contextUri: SpotifyURIConvertible?
     let audioFeatures: AudioFeatures?
+
+    enum Caption {
+        case artist
+        case album
+    }
 
     @EnvironmentObject private var spotify: Spotify
     @State private var playRequestCancellable: AnyCancellable? = nil
 
-    init(track: Track, contextUri: SpotifyURIConvertible? = nil, audioFeatures: AudioFeatures? = nil) {
+    private var captionText: String {
+        switch caption {
+            case .artist:
+                return track.artists?.first?.name ?? ""
+            case .album:
+                return track.album?.name ?? ""
+        }
+    }
+
+    init(track: Track, caption: Caption = .artist, contextUri: SpotifyURIConvertible? = nil, audioFeatures: AudioFeatures? = nil) {
         self.track = track
+        self.caption = caption
         self.contextUri = contextUri
         self.audioFeatures = audioFeatures
     }
 
     var body: some View {
         HStack {
-            SpotifyAsyncImage(images: track.album!.images)
+            SpotifyAsyncImage(images: track.album?.images)
                 .frame(width: 50, height: 50)
             VStack {
                 HStack {
@@ -38,7 +54,7 @@ struct TrackCell: View {
                         .foregroundColor(.secondary)
                 }
                 HStack {
-                    Text(track.artists?.first?.name ?? "")
+                    Text(captionText)
                     Spacer()
                     if let audioFeatures = audioFeatures {
                         Text("\(Int(audioFeatures.tempo)) BPM")

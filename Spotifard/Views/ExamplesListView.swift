@@ -8,6 +8,9 @@ struct ExamplesListView: View {
             NavigationLink("Playlists") {
                 PlaylistsListView()
             }
+            NavigationLink("Artists") {
+                ArtistsView()
+            }
             NavigationLink("Saved Albums") {
                 SavedAlbumsGridView()
             }
