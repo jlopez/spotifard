@@ -25,9 +25,11 @@ struct PlaylistTracksView: View {
         .navigationTitle(playlist.name)
         .task(fetchTracks)
         .toolbar {
-            Menu("Options", systemImage: "ellipsis.circle") {
-                Button("Guess the song", systemImage: "questionmark.circle") {
-                    navigationModel.path.append(ParameterizedScreen.guessTheSong(playlist))
+            if !tracks.isEmpty {
+                Menu("Options", systemImage: "ellipsis.circle") {
+                    Button("Guess the song", systemImage: "questionmark.circle") {
+                        navigationModel.path.append(ParameterizedScreen.guessTheSong(playlist))
+                    }
                 }
             }
         }
@@ -50,7 +52,7 @@ struct PlaylistTracksView: View {
 }
 
 #Preview {
-    NavigationStack {
+    ScreenNavigationStack {
         PlaylistTracksView(playlist: .lucyInTheSkyWithDiamonds)
             .environmentObject(Spotify())
     }

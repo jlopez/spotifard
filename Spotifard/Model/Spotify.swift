@@ -102,10 +102,7 @@ final class Spotify: ObservableObject {
         // MARK: Check to see if the authorization information is saved in
         // MARK: the keychain.
         let override = ProcessInfo.processInfo.isPreviewing ? Spotify.previewAuthorizationManager : nil
-        if override != nil {
-            print("using preview authorization manager")
-        }
-        if let authManagerData = override ?? keychain[data: self.authorizationManagerKey] {
+        if let authManagerData = keychain[data: self.authorizationManagerKey] ?? override {
 
             do {
                 // Try to decode the data.
@@ -113,7 +110,6 @@ final class Spotify: ObservableObject {
                     AuthorizationCodeFlowPKCEManager.self,
                     from: authManagerData
                 )
-                print("found authorization information in keychain")
 
                 /*
                  This assignment causes `authorizationManagerDidChange` to emit
@@ -203,11 +199,6 @@ final class Spotify: ObservableObject {
             self.isAuthorized = self.api.authorizationManager.isAuthorized()
         }
 
-        print(
-            "Spotify.authorizationManagerDidChange: isAuthorized:",
-            self.isAuthorized
-        )
-
         self.retrieveCurrentUser()
 
         do {
@@ -221,7 +212,6 @@ final class Spotify: ObservableObject {
 
             // Save the data to the keychain.
             self.keychain[data: self.authorizationManagerKey] = authManagerData
-            print("did save authorization manager to keychain")
 
         } catch {
             print(
@@ -258,7 +248,6 @@ final class Spotify: ObservableObject {
              relaunched.
              */
             try self.keychain.remove(self.authorizationManagerKey)
-            print("did remove authorization manager from keychain")
 
         } catch {
             print(

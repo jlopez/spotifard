@@ -9,11 +9,6 @@ import SwiftUI
 import Combine
 import SpotifyWebAPI
 
-@Observable
-class NavigationModel {
-    var path = NavigationPath()
-}
-
 struct ContentView: View {
     @EnvironmentObject var spotify: Spotify
     @State private var navigationModel = NavigationModel()
@@ -23,7 +18,7 @@ struct ContentView: View {
     @State private var cancellables: Set<AnyCancellable> = []
 
     var body: some View {
-        NavigationStack(path: $navigationModel.path) {
+        ScreenNavigationStack {
             ExamplesListView()
                 .disabled(!spotify.isAuthorized)
                 .toolbar {
@@ -31,7 +26,6 @@ struct ContentView: View {
                 }
         }
         .modifier(LoginView())
-        .environment(navigationModel)
         .alert("Authorization Error",
                isPresented: $showAuthorizationAlert,
                presenting: alert) { alert in
