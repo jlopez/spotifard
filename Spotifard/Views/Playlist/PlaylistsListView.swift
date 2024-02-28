@@ -48,9 +48,7 @@ struct PlaylistsListView: View {
             else {
                 List {
                     ForEach(playlists, id: \.uri) { playlist in
-                        NavigationLink {
-                            PlaylistTracksView(playlist: playlist)
-                        } label: {
+                        NavigationLink(value: playlist) {
                             PlaylistCell(playlist: playlist)
                         }
                     }
@@ -61,6 +59,9 @@ struct PlaylistsListView: View {
         }
         .navigationTitle("Playlists")
         .navigationBarItems(trailing: refreshButton)
+        .navigationDestination(for: Playlist.self) { playlist in
+            PlaylistTracksView(playlist: playlist)
+        }
         .alert(item: $alert) { alert in
             Alert(title: alert.title, message: alert.message)
         }

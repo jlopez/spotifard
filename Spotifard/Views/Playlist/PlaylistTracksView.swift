@@ -12,6 +12,7 @@ struct PlaylistTracksView: View {
     let playlist: Playlist<PlaylistItemsReference>
     @State private var tracks = [Track]()
     @EnvironmentObject private var spotify: Spotify
+    @Environment(NavigationModel.self) private var navigationModel
 
     var body: some View {
         VStack {
@@ -23,6 +24,13 @@ struct PlaylistTracksView: View {
         }
         .navigationTitle(playlist.name)
         .task(fetchTracks)
+        .toolbar {
+            Menu("Options", systemImage: "ellipsis.circle") {
+                Button("Guess the song", systemImage: "questionmark.circle") {
+                    navigationModel.path.append(ParameterizedScreen.guessTheSong(playlist))
+                }
+            }
+        }
     }
 
     @Sendable

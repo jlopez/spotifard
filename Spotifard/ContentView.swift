@@ -9,21 +9,29 @@ import SwiftUI
 import Combine
 import SpotifyWebAPI
 
+@Observable
+class NavigationModel {
+    var path = NavigationPath()
+}
+
 struct ContentView: View {
     @EnvironmentObject var spotify: Spotify
-
+    @State private var navigationModel = NavigationModel()
     @State private var alert: AlertItem?
     @State private var showAuthorizationAlert = false
 
     @State private var cancellables: Set<AnyCancellable> = []
 
     var body: some View {
-        NavigationView {
+        NavigationStack(path: $navigationModel.path) {
             ExamplesListView()
-                .navigationBarItems(trailing: logoutButton)
                 .disabled(!spotify.isAuthorized)
+                .toolbar {
+                    Button("Log Out", systemImage: "power", action: spotify.api.authorizationManager.deauthorize)
+                }
         }
         .modifier(LoginView())
+        .environment(navigationModel)
         .alert("Authorization Error",
                isPresented: $showAuthorizationAlert,
                presenting: alert) { alert in
@@ -117,25 +125,6 @@ struct ContentView: View {
         self.spotify.codeVerifier = String.randomURLSafe(length: 128)
         self.spotify.authorizationState = String.randomURLSafe(length: 128)
 
-    }
-
-    /// Removes the authorization information for the user.
-    var logoutButton: some View {
-        // Calling `spotify.api.authorizationManager.deauthorize` will cause
-        // `SpotifyAPI.authorizationManagerDidDeauthorize` to emit a signal,
-        // which will cause `Spotify.authorizationManagerDidDeauthorize()` to be
-        // called.
-        Button(action: spotify.api.authorizationManager.deauthorize, label: {
-            Text("Logout")
-                .foregroundColor(.white)
-                .padding(7)
-                .background(
-                    Color(red: 0.392, green: 0.720, blue: 0.197)
-                )
-                .cornerRadius(10)
-                .shadow(radius: 3)
-
-        })
     }
 }
 
